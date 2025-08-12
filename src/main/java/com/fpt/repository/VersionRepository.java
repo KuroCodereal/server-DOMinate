@@ -1,0 +1,11 @@
+package com.fpt.repository;
+
+import com.fpt.entity.Category;
+import com.fpt.entity.Version;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+public interface VersionRepository extends JpaRepository<Version, Long>, JpaSpecificationExecutor<Version> {
+
+
+}
