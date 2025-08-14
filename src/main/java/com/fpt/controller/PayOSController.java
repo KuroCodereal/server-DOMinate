@@ -125,7 +125,9 @@ public class PayOSController {
             // Xử lý dữ liệu đơn hàng
             long orderCode = Long.parseLong(data.get("orderCode").toString());
             String statusOrder = (String) data.get("status");
-            String status = (String) data.get("code");
+            //String status = (String) data.get("code");
+
+            String status = (String) webhookPayload.get("code");
 
             if (!paymentOrderService.orderIdExists((int) orderCode)) {
                 LOGGER.warning("❌ Không tìm thấy đơn hàng với orderCode: " + orderCode);
