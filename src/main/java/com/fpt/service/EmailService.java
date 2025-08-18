@@ -136,7 +136,6 @@ public class EmailService implements IEmailService {
 			helper.setText(content, true);
 			helper.setFrom("noreply@dominate.com", "DOMinate Team");
 			mailSender.send(message);
-			
 		} catch (MessagingException e) {
 			throw new RuntimeException("Failed to send email", e);
 		} catch (UnsupportedEncodingException e) {

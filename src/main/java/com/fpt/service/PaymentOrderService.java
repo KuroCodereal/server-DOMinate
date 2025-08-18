@@ -528,12 +528,12 @@ public class PaymentOrderService implements IPaymentOrderService {
 
 
     @Override
-    public Double getTotalRevenue() {
-        return repository.findAll().stream()
-                .filter(order -> order.getPaymentStatus() == PaymentOrder.PaymentStatus.SUCCESS)
-                .mapToDouble(PaymentOrder::getPrice)
-                .sum();
-    }
+public Double getTotalRevenue() {
+    return repository.findAll().stream()
+            .filter(order -> order.getPaymentStatus() == PaymentOrder.PaymentStatus.SUCCESS)
+            .mapToDouble(PaymentOrder::getPrice)
+            .sum();
+}
     @Override
     public Long countTotalOrders() {
         return repository.count();
