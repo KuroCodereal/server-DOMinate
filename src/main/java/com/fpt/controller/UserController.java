@@ -3,6 +3,9 @@ package com.fpt.controller;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fpt.annotation.CurrentUserId;
 import com.fpt.dto.*;
 import com.fpt.entity.PaymentOrder;
@@ -29,7 +32,7 @@ import java.util.Map;
 @RequestMapping(value = "/api/v1/users")
 @Validated
 public class UserController {
-
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	@Autowired
 	private IUserService userService;
 	@GetMapping("/checkEmail")
@@ -76,9 +79,11 @@ public class UserController {
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
+
 			Map<String, Object> errorResponse = new HashMap<>();
 			errorResponse.put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			errorResponse.put("message", "Register account failed.");
+			errorResponse.put("message", e);
+			//errorResponse.put("message", "Register account failed.");
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 		}
