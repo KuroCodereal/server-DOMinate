@@ -199,6 +199,11 @@ public class PaymentOrderService implements IPaymentOrderService {
         if (Boolean.TRUE.equals(order.getLicenseCreated())) {
             throw new IllegalArgumentException("License have created with this order.");
         }
+        boolean hasLicense = licenseRepository.existsByOrderId(form.getOrderId());
+        if (hasLicense) {
+            throw new IllegalArgumentException("License already exists for this order.");
+        }
+
 
         SubscriptionPackage subscription = order.getSubscriptionPackage();
         int durationDays = switch (subscription.getBillingCycle()) {
@@ -212,7 +217,7 @@ public class PaymentOrderService implements IPaymentOrderService {
         boolean hasActiveLicense = licenseRepository.existsByUserIdAndCanUsedTrue(userId);
 
         License license = new License();
-        license.setLicenseKey(LicenseKeyGenerate.generateLicenseKey());
+        license.setLicenseKey(LicenseKeyGenerate.generateUniqueLicenseKey(licenseRepository));
         license.setDuration(durationDays);
         license.setIp(ip);
         license.setUser(order.getUser());
@@ -401,11 +406,15 @@ public class PaymentOrderService implements IPaymentOrderService {
                     .phoneNumber(user.getPhoneNumber())
                     .build();
         }
+//        LicenseDTO licenseDto = null;
+//        Optional<License> licenseOpt = licenseRepository.findByOrderId(entity.getOrderId());
+        List<License> licenses = licenseRepository.findAllByOrderId(entity.getOrderId());
         LicenseDTO licenseDto = null;
-        Optional<License> licenseOpt = licenseRepository.findByOrderId(entity.getOrderId());
+        if (!licenses.isEmpty()) {
+            License license = licenses.stream()
+                    .max(Comparator.comparing(License::getCreatedAt))
+                    .orElse(licenses.get(0));
 
-        if (licenseOpt.isPresent()) {
-            License license = licenseOpt.get();
             boolean isExpired;
             int daysLeft;
 
@@ -519,12 +528,12 @@ public class PaymentOrderService implements IPaymentOrderService {
 
 
     @Override
-public Double getTotalRevenue() {
-    return repository.findAll().stream()
-            .filter(order -> order.getPaymentStatus() == PaymentOrder.PaymentStatus.SUCCESS)
-            .mapToDouble(PaymentOrder::getPrice)
-            .sum();
-}
+    public Double getTotalRevenue() {
+        return repository.findAll().stream()
+                .filter(order -> order.getPaymentStatus() == PaymentOrder.PaymentStatus.SUCCESS)
+                .mapToDouble(PaymentOrder::getPrice)
+                .sum();
+    }
     @Override
     public Long countTotalOrders() {
         return repository.count();
