@@ -82,7 +82,7 @@ public class UserController {
 
 			Map<String, Object> errorResponse = new HashMap<>();
 			errorResponse.put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			errorResponse.put("message", e);
+			errorResponse.put("message", e.getMessage());
 			//errorResponse.put("message", "Register account failed.");
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
