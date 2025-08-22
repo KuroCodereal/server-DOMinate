@@ -95,7 +95,6 @@ public class UserController {
 	public ResponseEntity<?> activeUserViaEmail(@RequestParam String token) {
 		// active user
 		userService.activeUser(token);
-
 		return new ResponseEntity<>("Active success!", HttpStatus.OK);
 	}
 
